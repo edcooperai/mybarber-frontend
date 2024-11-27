@@ -11,10 +11,8 @@
   to = "/index.html"
   status = 200
 
-[context.production]
-  environment = { NODE_ENV = "production" }
-
 [context.production.environment]
+  NODE_ENV = "production"
   VITE_API_URL = "https://api.mybarber.ai"
 
 [dev]
