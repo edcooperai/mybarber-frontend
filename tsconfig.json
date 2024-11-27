@@ -9,6 +9,6 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
   },
-  "include": ["src/**/*"],  // Add the src folder or any folder containing your TypeScript files
+  "include": ["src/**/*"], 
   "exclude": ["node_modules"]
 }
