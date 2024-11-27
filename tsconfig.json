@@ -1,14 +1,17 @@
 {
   "compilerOptions": {
-    "target": "ES6",
+    "target": "ES2021", // Supports modern JavaScript features
+    "lib": ["DOM", "DOM.Iterable", "ES2021"], // Includes DOM and ES2021 features
     "module": "ESNext",
     "moduleResolution": "node",
-    "jsx": "react",
+    "jsx": "react-jsx", // Updated for React 17+ (or keep "react" for older React versions)
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true, // For compatibility with CommonJS modules
     "strict": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true // Allow importing .json files
   },
-  "include": ["src/**/*"], 
+  "include": ["src/**/*"],
   "exclude": ["node_modules"]
 }
