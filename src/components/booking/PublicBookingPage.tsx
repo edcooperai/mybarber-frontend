@@ -16,8 +16,9 @@ interface PublicBookingPageProps {
     };
   };
   appointments: {
-    date: Date;
-    duration: number;
+    id: string;
+    time: string;
+    clientName: string;
   }[];
 }
 
@@ -53,8 +54,8 @@ const PublicBookingPage: React.FC<PublicBookingPageProps> = ({
       if (isAfter(currentTime, addDays(new Date(), 1))) {
         // Check if the slot conflicts with any existing appointments
         const isSlotAvailable = !appointments.some(apt => {
-          const aptStart = new Date(apt.date);
-          const aptEnd = new Date(aptStart.getTime() + apt.duration * 60000);
+          const aptStart = new Date(apt.time);
+          const aptEnd = new Date(aptStart.getTime() + 30 * 60000); // Assuming 30-minute duration for appointments
           const slotEnd = new Date(currentTime.getTime() + 30 * 60000);
           return (
             (currentTime >= aptStart && currentTime < aptEnd) ||
@@ -67,7 +68,7 @@ const PublicBookingPage: React.FC<PublicBookingPageProps> = ({
         }
       }
       
-      // Add 30 minutes
+      // Add 30 minutes to the slot
       currentTime = new Date(currentTime.getTime() + 30 * 60000);
     }
 
