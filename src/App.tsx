@@ -5,15 +5,8 @@ import DashboardLayout from './components/layouts/DashboardLayout';
 import PublicBookingPage from './components/booking/PublicBookingPage';
 import HealthCheck from './components/HealthCheck';
 
-// Define the Service type to match the mock data
-type Service = {
-  id: string;  // Changed id to string to match the expected type
-  name: string;
-  price: number;
-  duration?: string;
-  category?: string;
-  color?: string;
-};
+// Import the Service type from src/types
+import { Service as ServiceType } from './types'; // Assuming your types are in the src/types file
 
 const App: React.FC = () => {
   const handleLogout = () => {
@@ -24,9 +17,9 @@ const App: React.FC = () => {
   const mockBookingPageProps = {
     barberName: "John Doe",
     services: [
-      { id: "1", name: "Haircut", price: 20 },
-      { id: "2", name: "Beard Trim", price: 15 },
-    ] as Service[], // Ensure the services array matches the Service type
+      { id: "1", name: "Haircut", price: 20, duration: 30, category: "Hair", color: "#000" },  // Updated to match Service type
+      { id: "2", name: "Beard Trim", price: 15, duration: 15, category: "Beard", color: "#fff" }, // Updated to match Service type
+    ] as ServiceType[],  // Ensure the services array matches the Service type from src/types
     workingHours: {
       start: "09:00",
       end: "17:00",
