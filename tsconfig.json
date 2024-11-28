@@ -11,7 +11,8 @@
     "strict": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "outDir": "./dist"  // Add this line to specify the output directory
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
