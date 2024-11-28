@@ -3,14 +3,15 @@
     "target": "ES2021", // Supports modern JavaScript features
     "lib": ["DOM", "DOM.Iterable", "ES2021"], // Includes DOM and ES2021 features
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "node", // This is needed to handle import.meta correctly
     "jsx": "react-jsx", // Updated for React 17+ (or keep "react" for older React versions)
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true, // For compatibility with CommonJS modules
     "strict": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true // Allow importing .json files
+    "resolveJsonModule": true, // Allow importing .json files
+    "types": ["vite/client"] // Add this to include Vite's environment types
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
