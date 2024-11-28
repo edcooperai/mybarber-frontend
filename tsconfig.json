@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "typeRoots": ["./node_modules/@types", "./node_modules/vite/types"],
     "types": ["vite/client"],
     "target": "ES2021",
     "lib": ["DOM", "DOM.Iterable", "ES2021"],
