@@ -21,8 +21,13 @@ const App: React.FC = () => {
       { id: "2", name: "Beard Trim", price: 15, duration: 15, category: "Beard", color: "#fff" }, // Updated to match Service type
     ] as ServiceType[],  // Ensure the services array matches the Service type from src/types
     workingHours: {
-      start: "09:00",
-      end: "17:00",
+      Monday: { start: "09:00", end: "17:00", enabled: true },
+      Tuesday: { start: "09:00", end: "17:00", enabled: true },
+      Wednesday: { start: "09:00", end: "17:00", enabled: true },
+      Thursday: { start: "09:00", end: "17:00", enabled: true },
+      Friday: { start: "09:00", end: "17:00", enabled: true },
+      Saturday: { start: "09:00", end: "14:00", enabled: true },
+      Sunday: { start: "Closed", end: "Closed", enabled: false },
     },
     appointments: [
       { id: "1", time: "10:00", clientName: "Alice" },
