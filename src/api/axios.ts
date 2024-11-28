@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { useAuthStore } from '../store/authStore';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+// Correct way to access env variables using import.meta.env
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'; // Adjust the fallback URL as needed
 
 const api = axios.create({
   baseURL: API_URL,
