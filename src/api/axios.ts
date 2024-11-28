@@ -1,14 +1,14 @@
 import axios from 'axios';
 import { useAuthStore } from '../store/authStore';
 
-// Correct way to access env variables using import.meta.env
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'; // Adjust the fallback URL as needed
+// Use the production API URL directly, no fallback needed
+const API_URL = import.meta.env.VITE_API_URL; 
 
 const api = axios.create({
   baseURL: API_URL,
   withCredentials: true,
   headers: {
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
   }
 });
 
