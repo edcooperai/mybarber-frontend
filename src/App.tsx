@@ -7,7 +7,7 @@ import HealthCheck from './components/HealthCheck';
 
 // Define the Service type to match the mock data
 type Service = {
-  id: number;
+  id: string;  // Changed id to string to match the expected type
   name: string;
   price: number;
   duration?: string;
@@ -24,8 +24,8 @@ const App: React.FC = () => {
   const mockBookingPageProps = {
     barberName: "John Doe",
     services: [
-      { id: 1, name: "Haircut", price: 20 },
-      { id: 2, name: "Beard Trim", price: 15 },
+      { id: "1", name: "Haircut", price: 20 },
+      { id: "2", name: "Beard Trim", price: 15 },
     ] as Service[], // Ensure the services array matches the Service type
     workingHours: {
       start: "09:00",
