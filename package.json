@@ -1,4 +1,9 @@
 {
+  "name": "mybarber-ai",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "vite build"
+  },
   "dependencies": {
     "@react-oauth/google": "^0.12.1",
     "@stripe/stripe-js": "^3.0.7",
