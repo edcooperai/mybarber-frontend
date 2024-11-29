@@ -22,7 +22,7 @@ type TimeFrame = 'week' | 'month' | 'year';
 const RevenueAnalytics: React.FC = () => {
   const [timeFrame, setTimeFrame] = useState<TimeFrame>('week');
   const [currentDate, setCurrentDate] = useState(new Date());
-  
+
   const appointments = useAppointmentStore((state) => state.appointments);
   const services = useAppointmentStore((state) => state.services);
 
@@ -30,9 +30,9 @@ const RevenueAnalytics: React.FC = () => {
     return appointments
       .filter(apt => {
         const aptDate = new Date(apt.date);
-        return aptDate >= start && 
-               aptDate <= end && 
-               apt.status === 'attended';
+        return aptDate >= start &&
+          aptDate <= end &&
+          (apt.status === 'attended' || apt.status === 'no-show' || apt.status === 'cancelled'); // Ensure consistency here
       })
       .reduce((sum, apt) => sum + apt.service.price, 0);
   };
@@ -54,11 +54,11 @@ const RevenueAnalytics: React.FC = () => {
     }
 
     return services.map(service => {
-      const serviceAppointments = appointments.filter(apt => 
+      const serviceAppointments = appointments.filter(apt =>
         apt.service.id === service.id &&
         new Date(apt.date) >= startDate &&
         new Date(apt.date) <= today &&
-        apt.status === 'attended'
+        (apt.status === 'attended' || apt.status === 'no-show' || apt.status === 'cancelled') // Ensure consistency here
       );
 
       return {
@@ -123,8 +123,8 @@ const RevenueAnalytics: React.FC = () => {
 
     switch (timeFrame) {
       case 'week':
-        newDate = direction === 'prev' 
-          ? subDays(currentDate, 7) 
+        newDate = direction === 'prev'
+          ? subDays(currentDate, 7)
           : addWeeks(currentDate, 1);
         break;
       case 'month':
@@ -186,11 +186,11 @@ const RevenueAnalytics: React.FC = () => {
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <span className="text-sm min-w-[100px] text-center">
-                {format(currentDate, 
-                  timeFrame === 'week' 
-                    ? "'Week of' MMM d" 
-                    : timeFrame === 'month' 
-                      ? 'MMMM yyyy' 
+                {format(currentDate,
+                  timeFrame === 'week'
+                    ? "'Week of' MMM d"
+                    : timeFrame === 'month'
+                      ? 'MMMM yyyy'
                       : 'yyyy'
                 )}
               </span>
@@ -250,88 +250,11 @@ const RevenueAnalytics: React.FC = () => {
                   dataKey="revenue"
                   stroke="#8f00ff"
                   fill="#8f00ff"
-                  fillOpacity={0.2}
+                  fillOpacity={0.4}
                 />
               </AreaChart>
             </ResponsiveContainer>
           )}
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-6">
-        <div className="bg-gray-900 rounded-xl p-6">
-          <h3 className="text-xl font-bold mb-6">Revenue by Service</h3>
-          <div className="h-[300px] relative">
-            {!hasServiceData ? (
-              <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                No service revenue data available for this period
-              </div>
-            ) : (
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={revenueByService}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                  <XAxis dataKey="name" stroke="#9CA3AF" />
-                  <YAxis 
-                    stroke="#9CA3AF" 
-                    tickFormatter={(value) => `£${value}`}
-                    domain={[0, 'auto']}
-                  />
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: '#1F2937',
-                      border: 'none',
-                      borderRadius: '0.5rem',
-                      color: '#fff',
-                    }}
-                    formatter={(value: number) => [`£${value}`, 'Revenue']}
-                  />
-                  <Bar dataKey="value">
-                    {revenueByService.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            )}
-          </div>
-        </div>
-
-        <div className="bg-gray-900 rounded-xl p-6">
-          <h3 className="text-xl font-bold mb-6">Service Distribution</h3>
-          <div className="h-[300px] relative">
-            {!hasServiceData ? (
-              <div className="absolute inset-0 flex items-center justify-center text-gray-400">
-                No service distribution data available for this period
-              </div>
-            ) : (
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={revenueByService}
-                    dataKey="value"
-                    nameKey="name"
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={100}
-                    label
-                  >
-                    {revenueByService.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{
-                      backgroundColor: '#1F2937',
-                      border: 'none',
-                      borderRadius: '0.5rem',
-                      color: '#fff',
-                    }}
-                    formatter={(value: number) => [`£${value}`, 'Revenue']}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
-            )}
-          </div>
         </div>
       </div>
     </div>
