@@ -1,21 +1,20 @@
 [build]
-  command = "npm ci && npm run build"  # Clean install and then build
-  publish = "dist"
+  command = "npm ci && npx vite build"  # Clean install and build using npx to ensure Vite is found
+  publish = "dist"  # Output folder for the build artifacts
   base = "/"
 
 [build.environment]
-  NODE_VERSION = "18"
+  NODE_VERSION = "18"  # Set the Node.js version
+
+[dev]
+  framework = "vite"  # Specify Vite as the framework for local development
+  targetPort = 3000  # Ensure local server runs on the correct port
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
-  status = 200
+  status = 200  # Ensure all routes redirect to the main index.html for single-page apps
 
 [context.production.environment]
-  NODE_ENV = "production"
-  VITE_API_URL = "https://api.mybarber.ai"
-
-[dev]
-  framework = "vite"
-  targetPort = 3000
-
+  NODE_ENV = "production"  # Set the environment to production
+  VITE_API_URL = "mybarber-backend-production.up.railway.app"
