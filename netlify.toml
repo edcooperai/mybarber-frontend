@@ -18,3 +18,4 @@
 [context.production.environment]
   NODE_ENV = "production"  # Set the environment to production
   VITE_API_URL = "mybarber-backend-production.up.railway.app"
+
