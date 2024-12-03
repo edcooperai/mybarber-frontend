@@ -1,20 +1,20 @@
 [build]
-  command = "npm ci && npx vite build"  # Clean install and build using npx to ensure Vite is found
-  publish = "dist"  # Output folder for the build artifacts
-  base = "/"
+  command = "npm ci && npx vite build"  # Use 'npm ci' for clean install, 'npx' ensures Vite is available
+  publish = "dist"  # Output folder for build artifacts
+  base = "/"  # Define base folder for the build process
 
 [build.environment]
-  NODE_VERSION = "18"  # Set the Node.js version
+  NODE_VERSION = "18"  # Ensure you're using the correct Node version
 
 [dev]
-  framework = "vite"  # Specify Vite as the framework for local development
-  targetPort = 3000  # Ensure local server runs on the correct port
+  framework = "vite"  # Use Vite for local development
+  targetPort = 3000  # Set the local development port
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
-  status = 200  # Ensure all routes redirect to the main index.html for single-page apps
+  status = 200  # Redirect all routes to index.html for SPA
 
 [context.production.environment]
-  NODE_ENV = "production"  # Set the environment to production
-  VITE_API_URL = "mybarber-backend-production.up.railway.app"
+  NODE_ENV = "production"  # Set environment to production
+  VITE_API_URL = "mybarber-backend-production.up.railway.app"  # Set API URL
