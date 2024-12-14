@@ -1,10 +1,10 @@
 [build]
   command = "npm run build"
   publish = "dist"
-  base = "/"
 
 [build.environment]
   NODE_VERSION = "18"
+  VITE_API_URL = "https://api.mybarber.ai"
 
 [[redirects]]
   from = "/*"
@@ -13,10 +13,3 @@
 
 [context.production]
   environment = { NODE_ENV = "production" }
-
-[context.production.environment]
-  VITE_API_URL = "https://api.mybarber.ai"
-
-[dev]
-  framework = "vite"
-  targetPort = 3000
