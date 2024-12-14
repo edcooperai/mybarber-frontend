@@ -11,7 +11,8 @@ npm install
 
 2. Create .env file:
 ```env
-VITE_API_URL=https://mybarber-backend.up.railway.app
+VITE_API_URL=VITE_API_URL=https://mybarber-backend.up.railway.app
+
 ```
 
 3. Run development server:

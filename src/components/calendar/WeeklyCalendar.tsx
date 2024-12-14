@@ -45,7 +45,7 @@ const WeeklyCalendar: React.FC = () => {
       phoneNumber: '',
       service: data.service,
       date: data.date,
-      status: 'scheduled', // Ensuring this is consistent with status types in the store
+      status: 'scheduled',
     };
     addAppointment(appointment);
   };
