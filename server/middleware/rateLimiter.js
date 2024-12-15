@@ -5,6 +5,10 @@ import { logger } from '../utils/logger.js';
 const createLimiter = (options) => {
   return rateLimit({
     ...options,
+    keyGenerator: (req, res) => {
+      const ip = req.headers['x-forwarded-for'] || req.ip; // Use X-Forwarded-For if behind a proxy
+      return ip;
+    },
     handler: (req, res) => {
       logger.warn(`Rate limit exceeded for IP ${req.ip} on ${req.originalUrl}`);
       res.status(429).json({
