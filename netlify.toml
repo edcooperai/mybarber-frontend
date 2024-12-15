@@ -4,12 +4,10 @@
 
 [build.environment]
   NODE_VERSION = "18.20.5"
+  NODE_ENV = "development" 
   VITE_API_URL = "https://mybarber-backend-production.up.railway.app/api"
 
 [[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
-
-[context.production]
-  environment = { NODE_ENV = "production" }
