@@ -3,8 +3,8 @@
   publish = "dist"
 
 [build.environment]
-  NODE_VERSION = "18"
-  VITE_API_URL = "https://api.mybarber.ai"
+  NODE_VERSION = "18.20.5"  # Specify the exact version you're using locally
+  VITE_API_URL = "https://mybarber-backend-production.up.railway.app/api"
 
 [[redirects]]
   from = "/*"
