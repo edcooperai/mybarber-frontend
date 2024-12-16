@@ -1,24 +1,25 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import LandingPage from './components/LandingPage';
-import DashboardLayout from './components/layouts/DashboardLayout';
-import PublicBookingPage from './components/booking/PublicBookingPage';
-import HealthCheck from './components/HealthCheck';
+import { Routes, Route } from 'react-router-dom';
+import { LandingPage } from './components/landing';
+import { DashboardLayout } from './components/layouts';
+import { PublicBookingPage } from './components/booking';
+import { HealthCheck } from './components/HealthCheck';
+import { ROUTES } from './constants';
 
 const App: React.FC = () => {
   const handleLogout = () => {
-    // Temporary no-op
+    // Implement logout logic
   };
 
   return (
-    <Router>
+    <>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/book/:bookingId" element={<PublicBookingPage />} />
-        <Route path="/dashboard/*" element={<DashboardLayout onLogout={handleLogout} />} />
+        <Route path={ROUTES.HOME} element={<LandingPage />} />
+        <Route path={`${ROUTES.BOOKING}/:bookingId`} element={<PublicBookingPage />} />
+        <Route path={`${ROUTES.DASHBOARD}/*`} element={<DashboardLayout onLogout={handleLogout} />} />
       </Routes>
       <HealthCheck />
-    </Router>
+    </>
   );
 };
 

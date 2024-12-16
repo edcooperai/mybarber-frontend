@@ -1,6 +1,6 @@
 import React from 'react';
 import { Calendar, Clock, Users } from 'lucide-react';
-import FeatureCard from './FeatureCard';
+import { FeatureCard } from './FeatureCard';
 
 const features = [
   {
@@ -20,7 +20,7 @@ const features = [
   },
 ];
 
-const FeaturesSection: React.FC = () => {
+export const FeaturesSection: React.FC = () => {
   return (
     <div className="bg-black/50 py-16 sm:py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -38,5 +38,3 @@ const FeaturesSection: React.FC = () => {
     </div>
   );
 };
-
-export default FeaturesSection;

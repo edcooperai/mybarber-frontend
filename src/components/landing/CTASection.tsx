@@ -5,7 +5,7 @@ interface CTASectionProps {
   onGetStarted: () => void;
 }
 
-const CTASection: React.FC<CTASectionProps> = ({ onGetStarted }) => {
+export const CTASection: React.FC<CTASectionProps> = ({ onGetStarted }) => {
   return (
     <div className="py-16 sm:py-24">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -34,5 +34,3 @@ const CTASection: React.FC<CTASectionProps> = ({ onGetStarted }) => {
     </div>
   );
 };
-
-export default CTASection;

@@ -1,14 +1,21 @@
 import React, { useState } from 'react';
 import { Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react';
-import { LoginData } from '../../types';
+import type { LoginData } from '../../types';
+import { TwoFactorInput } from './TwoFactorInput';
 
 interface LoginFormProps {
   onSubmit: (data: LoginData) => Promise<void>;
   isLoading: boolean;
   error: string | null;
+  onForgotPassword: () => void;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading, error }) => {
+export const LoginForm: React.FC<LoginFormProps> = ({
+  onSubmit,
+  isLoading,
+  error,
+  onForgotPassword
+}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [twoFactorCode, setTwoFactorCode] = useState('');
@@ -17,7 +24,11 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading, error }) => 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await onSubmit({ email, password, twoFactorCode: requires2FA ? twoFactorCode : undefined });
+      await onSubmit({ 
+        email, 
+        password, 
+        twoFactorCode: requires2FA ? twoFactorCode : undefined 
+      });
     } catch (err: any) {
       if (err.response?.data?.requires2FA) {
         setRequires2FA(true);
@@ -66,21 +77,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading, error }) => 
       </div>
 
       {requires2FA && (
-        <div>
-          <label className="block text-sm font-medium text-gray-400 mb-1">
-            2FA Code
-          </label>
-          <input
-            type="text"
-            value={twoFactorCode}
-            onChange={(e) => setTwoFactorCode(e.target.value)}
-            className="w-full px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 focus:outline-none focus:border-[#8f00ff]"
-            placeholder="Enter 6-digit code"
-            maxLength={6}
-            pattern="\d{6}"
-            required
-          />
-        </div>
+        <TwoFactorInput
+          value={twoFactorCode}
+          onChange={setTwoFactorCode}
+        />
       )}
 
       {error && (
@@ -91,12 +91,20 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading, error }) => 
       )}
 
       <button
+        type="button"
+        onClick={onForgotPassword}
+        className="text-sm text-[#8f00ff] hover:underline"
+      >
+        Forgot password?
+      </button>
+
+      <button
         type="submit"
         disabled={isLoading}
-        className="w-full bg-[#8f00ff] text-white py-2 px-4 rounded-lg hover:bg-[#7a00d9] transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+        className="w-full flex items-center justify-center gap-2 bg-[#8f00ff] text-white py-2 px-4 rounded-lg hover:bg-[#7a00d9] transition-colors disabled:opacity-50"
       >
         {isLoading ? (
-          'Please wait...'
+          'Signing in...'
         ) : (
           <>
             Sign In
@@ -107,5 +115,3 @@ const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading, error }) => 
     </form>
   );
 };
-
-export default LoginForm;

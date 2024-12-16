@@ -7,7 +7,7 @@ interface NavbarProps {
   onSignIn: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ onSignIn }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onSignIn }) => {
   const isAuthenticated = useAuthStore((state) => !!state.token);
 
   return (
@@ -42,5 +42,3 @@ const Navbar: React.FC<NavbarProps> = ({ onSignIn }) => {
     </nav>
   );
 };
-
-export default Navbar;

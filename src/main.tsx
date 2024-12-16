@@ -1,16 +1,18 @@
-import { StrictMode } from 'react';
+import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import App from './App.tsx';
+import { AppProviders } from './providers/AppProviders';
+import App from './App';
 import './index.css';
 
-// Replace with your actual Google Client ID from Google Cloud Console
-const GOOGLE_CLIENT_ID = '123456789-example.apps.googleusercontent.com';
+const rootElement = document.getElementById('root');
+if (!rootElement) throw new Error('Failed to find the root element');
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+const root = createRoot(rootElement);
+
+root.render(
+  <React.StrictMode>
+    <AppProviders>
       <App />
-    </GoogleOAuthProvider>
-  </StrictMode>
+    </AppProviders>
+  </React.StrictMode>
 );

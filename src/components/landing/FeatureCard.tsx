@@ -7,7 +7,7 @@ interface FeatureCardProps {
   description: string;
 }
 
-const FeatureCard: React.FC<FeatureCardProps> = ({ Icon, title, description }) => {
+export const FeatureCard: React.FC<FeatureCardProps> = ({ Icon, title, description }) => {
   return (
     <div className="bg-gray-900 p-6 rounded-xl">
       <div className="w-12 h-12 bg-[#8f00ff]/20 rounded-lg flex items-center justify-center mb-4">
@@ -18,5 +18,3 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ Icon, title, description }) =
     </div>
   );
 };
-
-export default FeatureCard;

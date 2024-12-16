@@ -1,25 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Clock, Save, Check, ExternalLink } from 'lucide-react';
 import { useAppointmentStore } from '../../store/appointmentStore';
-import GoogleCalendarConnect from '../calendar/GoogleCalendarConnect';
+import { GoogleCalendarConnect } from '../calendar/GoogleCalendarConnect';
 
-interface WorkingHours {
-  start: string;
-  end: string;
-  enabled: boolean;
-}
-
-interface DaySchedule {
-  [key: string]: WorkingHours;
-}
-
-const BookingSettings: React.FC = () => {
+export const BookingSettings: React.FC = () => {
   const bookingSettings = useAppointmentStore((state) => state.bookingSettings);
   const updateBookingSettings = useAppointmentStore((state) => state.updateBookingSettings);
   const initializeBookingId = useAppointmentStore((state) => state.initializeBookingId);
 
   const [barberName, setBarberName] = useState(bookingSettings.barberName);
-  const [schedule, setSchedule] = useState<DaySchedule>(bookingSettings.workingHours);
+  const [schedule, setSchedule] = useState(bookingSettings.workingHours);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [calendarError, setCalendarError] = useState('');
 
@@ -27,26 +17,7 @@ const BookingSettings: React.FC = () => {
     initializeBookingId();
   }, [initializeBookingId]);
 
-  useEffect(() => {
-    setBarberName(bookingSettings.barberName);
-    setSchedule(bookingSettings.workingHours);
-  }, [bookingSettings]);
-
-  const bookingPageUrl = `https://mybarber.ai/book/${bookingSettings.bookingId}`;
-
-  const handleScheduleChange = (
-    day: string,
-    field: keyof WorkingHours,
-    value: string | boolean
-  ) => {
-    setSchedule((prev) => ({
-      ...prev,
-      [day]: {
-        ...prev[day],
-        [field]: value,
-      },
-    }));
-  };
+  const bookingPageUrl = `${window.location.origin}/book/${bookingSettings.bookingId}`;
 
   const handleSave = () => {
     updateBookingSettings({
@@ -55,17 +26,6 @@ const BookingSettings: React.FC = () => {
     });
     setSaveSuccess(true);
     setTimeout(() => setSaveSuccess(false), 2000);
-  };
-
-  const generateTimeOptions = () => {
-    const options = [];
-    for (let hour = 0; hour < 24; hour++) {
-      for (let minute = 0; minute < 60; minute += 30) {
-        const time = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
-        options.push(time);
-      }
-    }
-    return options;
   };
 
   return (
@@ -85,9 +45,6 @@ const BookingSettings: React.FC = () => {
               className="w-full max-w-md px-4 py-2 rounded-lg bg-gray-800 border border-gray-700 focus:outline-none focus:border-[#8f00ff]"
               placeholder="Enter your name"
             />
-            <p className="mt-1 text-sm text-gray-400">
-              This name will be displayed on your public booking page
-            </p>
           </div>
 
           <div className="bg-gray-800 p-4 rounded-lg max-w-md">
@@ -124,9 +81,7 @@ const BookingSettings: React.FC = () => {
               />
             </div>
             {calendarError && (
-              <div className="text-red-500 text-sm mt-2">
-                {calendarError}
-              </div>
+              <div className="text-red-500 text-sm mt-2">{calendarError}</div>
             )}
           </div>
 
@@ -141,7 +96,10 @@ const BookingSettings: React.FC = () => {
                         type="checkbox"
                         checked={hours.enabled}
                         onChange={(e) =>
-                          handleScheduleChange(day, 'enabled', e.target.checked)
+                          setSchedule(prev => ({
+                            ...prev,
+                            [day]: { ...prev[day], enabled: e.target.checked }
+                          }))
                         }
                         className="form-checkbox h-4 w-4 text-[#8f00ff] rounded border-gray-700 bg-gray-800 focus:ring-[#8f00ff]"
                       />
@@ -150,35 +108,31 @@ const BookingSettings: React.FC = () => {
                   </div>
                   <div className="flex items-center gap-2 flex-1">
                     <Clock className="w-4 h-4 text-gray-400" />
-                    <select
+                    <input
+                      type="time"
                       value={hours.start}
                       onChange={(e) =>
-                        handleScheduleChange(day, 'start', e.target.value)
+                        setSchedule(prev => ({
+                          ...prev,
+                          [day]: { ...prev[day], start: e.target.value }
+                        }))
                       }
                       disabled={!hours.enabled}
                       className="px-3 py-1.5 rounded-lg bg-gray-800 border border-gray-700 focus:outline-none focus:border-[#8f00ff] disabled:opacity-50"
-                    >
-                      {generateTimeOptions().map((time) => (
-                        <option key={`start-${time}`} value={time}>
-                          {time}
-                        </option>
-                      ))}
-                    </select>
+                    />
                     <span className="text-gray-400">to</span>
-                    <select
+                    <input
+                      type="time"
                       value={hours.end}
                       onChange={(e) =>
-                        handleScheduleChange(day, 'end', e.target.value)
+                        setSchedule(prev => ({
+                          ...prev,
+                          [day]: { ...prev[day], end: e.target.value }
+                        }))
                       }
                       disabled={!hours.enabled}
                       className="px-3 py-1.5 rounded-lg bg-gray-800 border border-gray-700 focus:outline-none focus:border-[#8f00ff] disabled:opacity-50"
-                    >
-                      {generateTimeOptions().map((time) => (
-                        <option key={`end-${time}`} value={time}>
-                          {time}
-                        </option>
-                      ))}
-                    </select>
+                    />
                   </div>
                 </div>
               ))}
@@ -205,5 +159,3 @@ const BookingSettings: React.FC = () => {
     </div>
   );
 };
-
-export default BookingSettings;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../store/authStore';
-import { usePageTitle } from '../utils/pageTitle';
+import { useAuth, usePageTitle } from '../hooks';
+import { ROUTES } from '../constants';
 import AuthModal from './auth/AuthModal';
 import Navbar from './landing/Navbar';
 import HeroSection from './landing/HeroSection';
@@ -11,13 +11,13 @@ import CTASection from './landing/CTASection';
 const LandingPage: React.FC = () => {
   usePageTitle('Modern Barber Booking');
   const navigate = useNavigate();
-  const isAuthenticated = useAuthStore((state) => !!state.token);
+  const { isAuthenticated } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signup');
 
   const handleGetStarted = () => {
     if (isAuthenticated) {
-      navigate('/dashboard');
+      navigate(ROUTES.DASHBOARD);
     } else {
       setAuthMode('signup');
       setShowAuthModal(true);
@@ -49,5 +49,3 @@ const LandingPage: React.FC = () => {
     </div>
   );
 };
-
-export default LandingPage;

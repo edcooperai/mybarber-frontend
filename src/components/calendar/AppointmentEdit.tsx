@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { format } from 'date-fns';
-import { Appointment, Service } from '../../types';
 import { X } from 'lucide-react';
+import type { Appointment, Service } from '../../types';
 
 interface AppointmentEditProps {
   appointment: Appointment;
@@ -11,7 +11,7 @@ interface AppointmentEditProps {
   services: Service[];
 }
 
-const AppointmentEdit: React.FC<AppointmentEditProps> = ({
+export const AppointmentEdit: React.FC<AppointmentEditProps> = ({
   appointment,
   onClose,
   onUpdate,
@@ -77,6 +77,7 @@ const AppointmentEdit: React.FC<AppointmentEditProps> = ({
         <h3 className="text-xl font-bold mb-6">Edit Appointment</h3>
         
         <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Form fields */}
           <div>
             <label className="block text-sm font-medium text-gray-400 mb-1">
               Client Name
@@ -166,5 +167,3 @@ const AppointmentEdit: React.FC<AppointmentEditProps> = ({
     </div>
   );
 };
-
-export default AppointmentEdit;

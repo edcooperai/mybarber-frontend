@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api from '../api/axios';
 
-const HealthCheck: React.FC = () => {
+export const HealthCheck: React.FC = () => {
   const [status, setStatus] = useState<'loading' | 'connected' | 'error'>('loading');
 
   useEffect(() => {
@@ -36,5 +36,3 @@ const HealthCheck: React.FC = () => {
     </div>
   );
 };
-
-export default HealthCheck;

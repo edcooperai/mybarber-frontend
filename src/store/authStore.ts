@@ -1,13 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { login, register, refreshToken, LoginData, RegisterData } from '../api/auth';
-
-interface User {
-  id: string;
-  email: string;
-  name: string;
-  twoFactorEnabled: boolean;
-}
+import { login as loginApi, register as registerApi, refreshToken as refreshTokenApi } from '../api/auth';
+import type { LoginData, RegisterData, User } from '../types';
 
 interface AuthState {
   token: string | null;
@@ -20,6 +14,7 @@ interface AuthState {
   setError: (error: string | null) => void;
   login: (data: LoginData) => Promise<void>;
   register: (data: RegisterData) => Promise<void>;
+  logout: () => void;
   refreshAccessToken: () => Promise<void>;
 }
 
@@ -44,7 +39,7 @@ export const useAuthStore = create<AuthState>()(
       login: async (data) => {
         try {
           set({ isLoading: true, error: null });
-          const response = await login(data);
+          const response = await loginApi(data);
           set({
             token: response.accessToken,
             refreshToken: response.refreshToken,
@@ -63,7 +58,7 @@ export const useAuthStore = create<AuthState>()(
       register: async (data) => {
         try {
           set({ isLoading: true, error: null });
-          const response = await register(data);
+          const response = await registerApi(data);
           set({
             token: response.accessToken,
             refreshToken: response.refreshToken,
@@ -79,18 +74,21 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
+      logout: () => {
+        set({ token: null, refreshToken: null, user: null });
+      },
+
       refreshAccessToken: async () => {
         const currentRefreshToken = get().refreshToken;
         if (!currentRefreshToken) return;
 
         try {
-          const response = await refreshToken(currentRefreshToken);
+          const response = await refreshTokenApi(currentRefreshToken);
           set({
             token: response.accessToken,
             refreshToken: response.refreshToken
           });
         } catch (error) {
-          // If refresh fails, log out the user
           get().clearAuth();
           throw error;
         }
