@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { useHealthCheck } from '../hooks/useHealthCheck';
 
-export const HealthCheck: React.FC = () => {
+export const HealthCheck: React.FC = memo(() => {
   const status = useHealthCheck();
 
   if (status === 'loading') return null;
@@ -20,4 +20,6 @@ export const HealthCheck: React.FC = () => {
       </div>
     </div>
   );
-};
+});
+
+HealthCheck.displayName = 'HealthCheck';

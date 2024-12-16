@@ -1,4 +1,4 @@
-import { api } from './index';
+import api from './axios';
 
 export interface HealthCheckResponse {
   status: 'success' | 'error';
@@ -9,8 +9,16 @@ export interface HealthCheckResponse {
 export const checkApiHealth = async (): Promise<HealthCheckResponse> => {
   try {
     const response = await api.get<HealthCheckResponse>('/api/health');
-    return response.data;
+    return {
+      status: response.data.status,
+      message: response.data.message,
+      timestamp: response.data.timestamp
+    };
   } catch (error) {
-    throw new Error('Health check failed');
+    return {
+      status: 'error',
+      message: 'Health check failed',
+      timestamp: new Date().toISOString()
+    };
   }
 };

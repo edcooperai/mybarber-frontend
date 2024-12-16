@@ -1,4 +1,4 @@
-import { api } from './index';
+import api from './axios';
 
 export interface SMSResponse {
   success: boolean;
@@ -17,12 +17,10 @@ export const sendTestSMS = async (to: string, message: string): Promise<SMSRespo
     const response = await api.post('/test/sms', { to, message });
     return response.data;
   } catch (error: any) {
-    // Ensure we only return serializable data
-    const errorResponse: SMSResponse = {
+    return {
       success: false,
       error: error?.response?.data?.error || error?.message || 'Failed to send SMS',
       details: error?.response?.data?.details || {}
     };
-    return errorResponse;
   }
 };

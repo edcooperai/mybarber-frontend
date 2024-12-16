@@ -9,13 +9,13 @@ if (!API_URL) {
 
 const api = axios.create({
   baseURL: API_URL,
-  timeout: 10000,
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json'
   }
 });
 
-// Add a request interceptor
+// Request interceptor
 api.interceptors.request.use(
   (config) => {
     const token = useAuthStore.getState().token;
@@ -27,20 +27,32 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Add a response interceptor
+// Response interceptor
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
 
-    // If the error is 401 and we haven't retried yet
+    // Handle 401 errors and token refresh
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
-        await useAuthStore.getState().refreshAccessToken();
-        const token = useAuthStore.getState().token;
-        originalRequest.headers.Authorization = `Bearer ${token}`;
+        const refreshToken = useAuthStore.getState().refreshToken;
+        if (!refreshToken) {
+          throw new Error('No refresh token available');
+        }
+
+        // Attempt to refresh the token
+        const response = await axios.post(`${API_URL}/api/auth/refresh-token`, {
+          refreshToken
+        });
+
+        const { accessToken, refreshToken: newRefreshToken } = response.data;
+        useAuthStore.getState().setAuth(accessToken, newRefreshToken, useAuthStore.getState().user);
+
+        // Retry the original request with the new token
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return api(originalRequest);
       } catch (refreshError) {
         useAuthStore.getState().clearAuth();

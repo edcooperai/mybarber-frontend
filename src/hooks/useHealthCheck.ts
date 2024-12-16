@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { checkApiHealth } from '../api/health';
 
 export type HealthStatus = 'loading' | 'connected' | 'error';
@@ -6,16 +6,16 @@ export type HealthStatus = 'loading' | 'connected' | 'error';
 export const useHealthCheck = (checkInterval = 30000) => {
   const [status, setStatus] = useState<HealthStatus>('loading');
 
-  useEffect(() => {
-    const performHealthCheck = async () => {
-      try {
-        const response = await checkApiHealth();
-        setStatus(response.status === 'success' ? 'connected' : 'error');
-      } catch (error) {
-        setStatus('error');
-      }
-    };
+  const performHealthCheck = useCallback(async () => {
+    try {
+      const response = await checkApiHealth();
+      setStatus(response.status === 'success' ? 'connected' : 'error');
+    } catch (error) {
+      setStatus('error');
+    }
+  }, []);
 
+  useEffect(() => {
     // Initial check
     performHealthCheck();
 
@@ -24,7 +24,7 @@ export const useHealthCheck = (checkInterval = 30000) => {
 
     // Cleanup
     return () => clearInterval(interval);
-  }, [checkInterval]);
+  }, [checkInterval, performHealthCheck]);
 
   return status;
 };
