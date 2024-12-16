@@ -1,4 +1,4 @@
-import api from './axios';
+import { api } from './index';
 
 export interface SMSResponse {
   success: boolean;

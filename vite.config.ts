@@ -5,14 +5,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 3000,
-    host: true, // Required for the preview to work
-    proxy: {
-      '/api': {
-        target: 'http://localhost:5000',
-        changeOrigin: true,
-        secure: false
-      }
-    }
+    host: true
   },
   preview: {
     port: 3000,

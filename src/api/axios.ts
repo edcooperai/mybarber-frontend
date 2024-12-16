@@ -1,11 +1,15 @@
 import axios from 'axios';
 import { useAuthStore } from '../store/authStore';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_URL;
+
+if (!API_URL) {
+  throw new Error('VITE_API_URL environment variable is not defined');
+}
 
 const api = axios.create({
   baseURL: API_URL,
-  withCredentials: true,
+  timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
   }
@@ -20,9 +24,7 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 // Add a response interceptor
@@ -36,15 +38,11 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        // Try to refresh the token
         await useAuthStore.getState().refreshAccessToken();
-        
-        // Retry the original request with the new token
         const token = useAuthStore.getState().token;
         originalRequest.headers.Authorization = `Bearer ${token}`;
         return api(originalRequest);
       } catch (refreshError) {
-        // If refresh fails, redirect to login
         useAuthStore.getState().clearAuth();
         window.location.href = '/';
         return Promise.reject(refreshError);

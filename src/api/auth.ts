@@ -1,4 +1,4 @@
-import api from './axios';
+import { api } from './index';
 import { API_ENDPOINTS } from '../constants/api';
 import type { LoginData, RegisterData } from '../types';
 
