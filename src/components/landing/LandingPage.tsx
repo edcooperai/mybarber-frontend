@@ -10,7 +10,7 @@ import { FeaturesSection } from './FeaturesSection';
 import { CTASection } from './CTASection';
 
 export const LandingPage: React.FC = () => {
-  usePageTitle('Modern Barber Booking');
+  usePageTitle(); // Just use the default app name
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);

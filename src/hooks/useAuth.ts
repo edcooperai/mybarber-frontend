@@ -20,35 +20,27 @@ export const useAuth = () => {
   const login = useCallback(async (data: LoginData) => {
     try {
       await loginAction(data);
+      navigate(ROUTES.DASHBOARD);
       return true;
     } catch (error) {
       throw error;
     }
-  }, [loginAction]);
+  }, [loginAction, navigate]);
 
   const register = useCallback(async (data: RegisterData) => {
     try {
       await registerAction(data);
+      navigate(ROUTES.DASHBOARD);
       return true;
     } catch (error) {
       throw error;
     }
-  }, [registerAction]);
+  }, [registerAction, navigate]);
 
   const logout = useCallback(() => {
     logoutAction();
     navigate(ROUTES.HOME);
   }, [logoutAction, navigate]);
-
-  const refreshToken = useCallback(async () => {
-    try {
-      await refreshTokenAction();
-      return true;
-    } catch (error) {
-      navigate(ROUTES.HOME);
-      return false;
-    }
-  }, [refreshTokenAction, navigate]);
 
   return {
     isAuthenticated,
@@ -56,7 +48,6 @@ export const useAuth = () => {
     token,
     login,
     register,
-    logout,
-    refreshToken
+    logout
   };
 };

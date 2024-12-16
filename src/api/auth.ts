@@ -31,24 +31,3 @@ export const verifyEmail = async (token: string) => {
   const response = await api.get(`${API_ENDPOINTS.AUTH.VERIFY_EMAIL}/${token}`);
   return response.data;
 };
-
-export const setup2FA = async (token: string) => {
-  const response = await api.post('/api/auth/2fa/setup', null, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  return response.data;
-};
-
-export const verify2FA = async (token: string, code: string) => {
-  const response = await api.post('/api/auth/2fa/verify', { code }, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  return response.data;
-};
-
-export const disable2FA = async (token: string, code: string) => {
-  const response = await api.post('/api/auth/2fa/disable', { code }, {
-    headers: { Authorization: `Bearer ${token}` }
-  });
-  return response.data;
-};
