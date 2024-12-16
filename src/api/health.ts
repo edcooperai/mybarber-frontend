@@ -8,7 +8,7 @@ export interface HealthCheckResponse {
 
 export const checkApiHealth = async (): Promise<HealthCheckResponse> => {
   try {
-    const response = await api.get<HealthCheckResponse>('/health');
+    const response = await api.get<HealthCheckResponse>('/api/health');
     return response.data;
   } catch (error) {
     throw new Error('Health check failed');
