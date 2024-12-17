@@ -16,3 +16,9 @@ export interface User {
   name: string;
   twoFactorEnabled: boolean;
 }
+
+export interface AuthResponse {
+  accessToken: string;
+  refreshToken: string;
+  user: User;
+}

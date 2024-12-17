@@ -38,26 +38,13 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const refreshToken = useAuthStore.getState().refreshToken;
-        if (!refreshToken) {
-          throw new Error('No refresh token available');
-        }
-
-        // Attempt to refresh the token
-        const response = await axios.post(`${API_URL}/api/auth/refresh-token`, {
-          refreshToken
-        });
-
-        const { accessToken, refreshToken: newRefreshToken } = response.data;
-        useAuthStore.getState().setAuth(accessToken, newRefreshToken, useAuthStore.getState().user);
-
-        // Retry the original request with the new token
-        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
+        await useAuthStore.getState().refreshAccessToken();
+        const token = useAuthStore.getState().token;
+        originalRequest.headers.Authorization = `Bearer ${token}`;
         return api(originalRequest);
       } catch (refreshError) {
         useAuthStore.getState().clearAuth();
-        window.location.href = '/';
-        return Promise.reject(refreshError);
+        throw refreshError;
       }
     }
 
