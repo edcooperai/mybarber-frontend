@@ -7,10 +7,8 @@ interface AuthState {
   token: string | null;
   refreshToken: string | null;
   user: User | null;
-  error: string | null;
   setAuth: (token: string, refreshToken: string, user: User) => void;
   clearAuth: () => void;
-  setError: (error: string | null) => void;
   refreshAccessToken: () => Promise<void>;
 }
 
@@ -20,16 +18,12 @@ export const useAuthStore = create<AuthState>()(
       token: null,
       refreshToken: null,
       user: null,
-      error: null,
 
       setAuth: (token, refreshToken, user) => 
-        set({ token, refreshToken, user, error: null }),
+        set({ token, refreshToken, user }),
 
       clearAuth: () => 
-        set({ token: null, refreshToken: null, user: null, error: null }),
-
-      setError: (error) => 
-        set({ error }),
+        set({ token: null, refreshToken: null, user: null }),
 
       refreshAccessToken: async () => {
         const currentRefreshToken = get().refreshToken;
@@ -42,7 +36,7 @@ export const useAuthStore = create<AuthState>()(
           set({
             token: response.accessToken,
             refreshToken: response.refreshToken,
-            error: null
+            user: response.user
           });
         } catch (error) {
           get().clearAuth();

@@ -1,13 +1,21 @@
 import jwt from 'jsonwebtoken';
 import speakeasy from 'speakeasy';
+import bcrypt from 'bcrypt';
 import User from '../models/User.js';
 import { sendVerificationEmail, sendPasswordResetEmail } from '../utils/email.js';
 import { generateTokens, generateToken } from '../utils/token.js';
 import { logger } from '../utils/logger.js';
 
+// Register new user
 export const register = async (req, res, next) => {
   try {
     const { email, password, name } = req.body;
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: 'Invalid email format' });
+    }
 
     // Check if user already exists
     const existingUser = await User.findOne({ email });
@@ -15,20 +23,23 @@ export const register = async (req, res, next) => {
       return res.status(400).json({ message: 'Email already registered' });
     }
 
+    // Hash the password before saving
+    const hashedPassword = await bcrypt.hash(password, 10);
+
     // Create verification token
     const verificationToken = generateToken();
 
     // Create new user
     const user = new User({
       email,
-      password,
+      password: hashedPassword,  // Save hashed password
       name,
       verificationToken
     });
 
     await user.save();
 
-    // Generate tokens
+    // Generate tokens with expiration times
     const { accessToken, refreshToken } = generateTokens(user._id);
 
     // Save refresh token
@@ -57,6 +68,7 @@ export const register = async (req, res, next) => {
   }
 };
 
+// Login user
 export const login = async (req, res, next) => {
   try {
     const { email, password, twoFactorCode } = req.body;
@@ -106,7 +118,7 @@ export const login = async (req, res, next) => {
     user.failedLoginAttempts = 0;
     user.lockUntil = null;
 
-    // Generate new tokens
+    // Generate new tokens with expiration times
     const { accessToken, refreshToken } = generateTokens(user._id);
     user.refreshToken = refreshToken;
     await user.save();
@@ -126,6 +138,7 @@ export const login = async (req, res, next) => {
   }
 };
 
+// Setup 2FA
 export const setup2FA = async (req, res, next) => {
   try {
     const user = await User.findById(req.userId);
@@ -152,6 +165,7 @@ export const setup2FA = async (req, res, next) => {
   }
 };
 
+// Verify 2FA
 export const verify2FA = async (req, res, next) => {
   try {
     const { code } = req.body;
@@ -180,6 +194,7 @@ export const verify2FA = async (req, res, next) => {
   }
 };
 
+// Disable 2FA
 export const disable2FA = async (req, res, next) => {
   try {
     const { code } = req.body;

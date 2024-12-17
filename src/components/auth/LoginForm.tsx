@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react';
 import type { LoginData } from '../../types';
 import { TwoFactorInput } from './TwoFactorInput';
+import { validateEmail } from '../../utils/validation';
 
 interface LoginFormProps {
   onSubmit: (data: LoginData) => Promise<void>;
@@ -20,9 +21,24 @@ export const LoginForm: React.FC<LoginFormProps> = ({
   const [password, setPassword] = useState('');
   const [twoFactorCode, setTwoFactorCode] = useState('');
   const [requires2FA, setRequires2FA] = useState(false);
+  const [validationError, setValidationError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setValidationError('');
+
+    // Validate email
+    if (!validateEmail(email)) {
+      setValidationError('Please enter a valid email address');
+      return;
+    }
+
+    // Validate password
+    if (password.length < 8) {
+      setValidationError('Password must be at least 8 characters long');
+      return;
+    }
+
     try {
       await onSubmit({ 
         email, 
@@ -83,10 +99,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         />
       )}
 
-      {error && (
+      {(error || validationError) && (
         <div className="flex items-center gap-2 text-red-500">
           <AlertCircle className="w-4 h-4" />
-          {error}
+          {validationError || error}
         </div>
       )}
 

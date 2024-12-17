@@ -1,31 +1,40 @@
 import api from '../../api/axios';
 import { LoginData, RegisterData, AuthResponse } from '../../types/auth';
+import { handleApiError } from '../error/errorHandler';
 
 export const authService = {
   async login(data: LoginData): Promise<AuthResponse> {
-    const response = await api.post('/auth/login', data);
-    return response.data;
+    try {
+      const response = await api.post('/api/auth/login', data);
+      return response.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
   },
 
   async register(data: RegisterData): Promise<AuthResponse> {
-    const response = await api.post('/auth/register', data);
-    return response.data;
+    try {
+      const response = await api.post('/api/auth/register', data);
+      return response.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
   },
 
   async refreshToken(refreshToken: string): Promise<AuthResponse> {
-    const response = await api.post('/auth/refresh-token', { refreshToken });
-    return response.data;
-  },
-
-  async requestPasswordReset(email: string): Promise<void> {
-    await api.post('/auth/password-reset-request', { email });
-  },
-
-  async resetPassword(token: string, password: string): Promise<void> {
-    await api.post(`/auth/password-reset/${token}`, { password });
+    try {
+      const response = await api.post('/api/auth/refresh-token', { refreshToken });
+      return response.data;
+    } catch (error) {
+      throw handleApiError(error);
+    }
   },
 
   async verifyEmail(token: string): Promise<void> {
-    await api.get(`/auth/verify-email/${token}`);
+    try {
+      await api.get(`/api/auth/verify-email/${token}`);
+    } catch (error) {
+      throw handleApiError(error);
+    }
   }
 };

@@ -4,13 +4,13 @@ import passwordValidator from 'password-validator';
 
 const passwordSchema = new passwordValidator();
 passwordSchema
-  .is().min(8)
-  .is().max(100)
-  .has().uppercase()
-  .has().lowercase()
-  .has().digits(1)
-  .has().symbols(1)
-  .has().not().spaces();
+  .is().min(8)                            // Minimum length 8
+  .is().max(100)                          // Maximum length 100
+  .has().uppercase()                      // Must have uppercase letters
+  .has().lowercase()                      // Must have lowercase letters
+  .has().digits(1)                        // Must have at least 1 digit
+  .has().symbols(1)                       // Must have at least 1 symbol
+  .has().not().spaces();                  // Cannot have spaces
 
 const userSchema = new mongoose.Schema({
   email: {

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Mail, Lock, User, ArrowRight, AlertCircle } from 'lucide-react';
 import type { RegisterData } from '../../types';
 import { PasswordStrengthIndicator } from './PasswordStrengthIndicator';
+import { validateEmail, validatePassword } from '../../utils/validation';
 
 interface RegisterFormProps {
   onSubmit: (data: RegisterData) => Promise<void>;
@@ -17,10 +18,36 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+  const [validationError, setValidationError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await onSubmit({ email, password, name });
+    setValidationError('');
+
+    // Validate email
+    if (!validateEmail(email)) {
+      setValidationError('Please enter a valid email address');
+      return;
+    }
+
+    // Validate password
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.isValid) {
+      setValidationError(passwordValidation.errors[0]);
+      return;
+    }
+
+    // Validate name
+    if (name.trim().length < 2) {
+      setValidationError('Name must be at least 2 characters long');
+      return;
+    }
+
+    try {
+      await onSubmit({ email, password, name });
+    } catch (error) {
+      // Error handling is done in the parent component
+    }
   };
 
   return (
@@ -83,10 +110,10 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
         <PasswordStrengthIndicator password={password} />
       </div>
 
-      {error && (
+      {(error || validationError) && (
         <div className="flex items-center gap-2 text-red-500">
           <AlertCircle className="w-4 h-4" />
-          {error}
+          {validationError || error}
         </div>
       )}
 
