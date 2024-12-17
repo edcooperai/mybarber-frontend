@@ -1,8 +1,36 @@
-import React, { memo } from 'react';
-import { useHealthCheck } from '../hooks/useHealthCheck';
+import React, { memo, useEffect, useState, useCallback } from 'react';
+import { checkApiHealth } from '../api/health';
+import { toast } from 'react-hot-toast';
 
 export const HealthCheck: React.FC = memo(() => {
-  const status = useHealthCheck();
+  const [status, setStatus] = useState<'loading' | 'connected' | 'error'>('loading');
+
+  const checkHealth = useCallback(async () => {
+    try {
+      const response = await checkApiHealth();
+      const newStatus = response.status === 'success' ? 'connected' : 'error';
+      
+      // Only update status and show toast if status changed
+      setStatus(prevStatus => {
+        if (prevStatus !== newStatus && newStatus === 'error') {
+          toast.error('API connection error. Some features may be unavailable.');
+        }
+        return newStatus;
+      });
+    } catch (error) {
+      setStatus('error');
+    }
+  }, []);
+
+  useEffect(() => {
+    // Initial check
+    checkHealth();
+
+    // Set up periodic checks
+    const interval = setInterval(checkHealth, 30000);
+
+    return () => clearInterval(interval);
+  }, [checkHealth]);
 
   if (status === 'loading') return null;
 

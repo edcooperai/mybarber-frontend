@@ -1,49 +1,47 @@
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
+import { authService } from '../services/auth/authService';
+import { LoginData, RegisterData } from '../types';
 import { ROUTES } from '../constants';
-import type { LoginData, RegisterData } from '../types';
+import { toast } from 'react-hot-toast';
 
 export const useAuth = () => {
   const navigate = useNavigate();
-  const { 
-    login: loginAction, 
-    register: registerAction, 
-    logout: logoutAction,
-    token,
-    user,
-    refreshToken: refreshTokenAction
-  } = useAuthStore();
-
-  const isAuthenticated = !!token;
+  const { token, user, setAuth, clearAuth } = useAuthStore();
 
   const login = useCallback(async (data: LoginData) => {
     try {
-      await loginAction(data);
+      const response = await authService.login(data);
+      setAuth(response.accessToken, response.refreshToken, response.user);
+      toast.success('Successfully signed in!');
       navigate(ROUTES.DASHBOARD);
-      return true;
-    } catch (error) {
+    } catch (error: any) {
+      toast.error(error.message);
       throw error;
     }
-  }, [loginAction, navigate]);
+  }, [navigate, setAuth]);
 
   const register = useCallback(async (data: RegisterData) => {
     try {
-      await registerAction(data);
+      const response = await authService.register(data);
+      setAuth(response.accessToken, response.refreshToken, response.user);
+      toast.success('Account created successfully! Please verify your email.');
       navigate(ROUTES.DASHBOARD);
-      return true;
-    } catch (error) {
+    } catch (error: any) {
+      toast.error(error.message);
       throw error;
     }
-  }, [registerAction, navigate]);
+  }, [navigate, setAuth]);
 
   const logout = useCallback(() => {
-    logoutAction();
+    clearAuth();
+    toast.success('Successfully signed out');
     navigate(ROUTES.HOME);
-  }, [logoutAction, navigate]);
+  }, [clearAuth, navigate]);
 
   return {
-    isAuthenticated,
+    isAuthenticated: !!token,
     user,
     token,
     login,

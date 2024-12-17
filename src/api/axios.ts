@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useAuthStore } from '../store/authStore';
+import { toast } from 'react-hot-toast';
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -9,7 +10,7 @@ if (!API_URL) {
 
 const api = axios.create({
   baseURL: API_URL,
-  withCredentials: true,
+  timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
   }
@@ -24,7 +25,10 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    console.error('Request error:', error);
+    return Promise.reject(error);
+  }
 );
 
 // Response interceptor
@@ -33,8 +37,14 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    // Handle network errors
+    if (!error.response) {
+      toast.error('Network error. Please check your connection.');
+      return Promise.reject(error);
+    }
+
     // Handle 401 errors and token refresh
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (error.response.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       try {
@@ -44,10 +54,14 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         useAuthStore.getState().clearAuth();
-        throw refreshError;
+        toast.error('Session expired. Please sign in again.');
+        return Promise.reject(refreshError);
       }
     }
 
+    // Handle other errors
+    const errorMessage = error.response?.data?.message || 'An error occurred';
+    toast.error(errorMessage);
     return Promise.reject(error);
   }
 );

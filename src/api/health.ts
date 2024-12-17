@@ -1,4 +1,4 @@
-import api from './axios';
+import axios from 'axios';
 
 export interface HealthCheckResponse {
   status: 'success' | 'error';
@@ -6,18 +6,20 @@ export interface HealthCheckResponse {
   timestamp: string;
 }
 
+// Create a dedicated axios instance for health checks
+const healthApi = axios.create({
+  baseURL: import.meta.env.VITE_API_URL,
+  timeout: 5000
+});
+
 export const checkApiHealth = async (): Promise<HealthCheckResponse> => {
   try {
-    const response = await api.get<HealthCheckResponse>('/api/health');
-    return {
-      status: response.data.status,
-      message: response.data.message,
-      timestamp: response.data.timestamp
-    };
+    const response = await healthApi.get<HealthCheckResponse>('/api/health');
+    return response.data;
   } catch (error) {
     return {
       status: 'error',
-      message: 'Health check failed',
+      message: 'API is unreachable',
       timestamp: new Date().toISOString()
     };
   }
