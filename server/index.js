@@ -21,6 +21,9 @@ dotenv.config(); // Load .env variables
 
 const app = express();
 
+// Log the frontend URL for debugging
+console.log("Frontend URL:", process.env.FRONTEND_URL);
+
 // Middleware setup
 app.use(express.json());
 app.use(cors({
